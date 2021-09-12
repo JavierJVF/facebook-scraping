@@ -18,10 +18,10 @@ class Account(Web_driver):
     def login(self):
         print('logueando')
         self.driver.get('https://www.facebook.com/')
-        time.sleep(120)
+        time.sleep(25)
 
         self.set_credentials()
-        time.sleep(120)
+        time.sleep(25)
 
         name_png = 'login_'+self.str_datetime()
         self.driver.save_screenshot('screenshot/'+ name_png + '.png')
@@ -48,7 +48,7 @@ class Account(Web_driver):
     
     def find_friends(self):
         self.driver.get('https://www.facebook.com/friends/list')
-        time.sleep(40)
+        time.sleep(25)
         name_png = 'friends_'+self.str_datetime()+'.csv'
         self.driver.save_screenshot('screenshot/'+ name_png + '.png')
 
