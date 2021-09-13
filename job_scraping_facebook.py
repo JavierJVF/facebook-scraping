@@ -13,10 +13,6 @@ account.set_list()
 account.select_user_objetive()
 account.user_obetive.find_posts()
 
-'''user_obetive = User_objetive('ssss' , 'saasas')
-print(user_obetive)
-print(user_obetive.name)
-'''
 #print(account.list_frends)
 print(account.user_obetive)
 

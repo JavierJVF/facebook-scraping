@@ -63,7 +63,7 @@ class User_objetive(User,Web_driver):
                 #Cantidad de reacciones
                 #span.gpro0wi8.pcp91wgn
                 try:
-                    cant_reacciones = item.find_element_by_css_selector('span.gpro0wi8.pcp91wgn').text
+                    cant_reacciones = int(item.find_element_by_css_selector('span.gpro0wi8.pcp91wgn').text)
                 except Exception as e:
                     cant_reacciones = 0
                     #print(e)
@@ -78,7 +78,7 @@ class User_objetive(User,Web_driver):
 
                     try:
                         cant_comments_text = container_shared_comments.find_element_by_xpath('div/span').text
-                        cant_shared = int(cant_comments_text.split(' ')[0])
+                        cant_comments = int(cant_comments_text.split(' ')[0])
                     except:
                         cant_comments = 0
                 except Exception as e:
@@ -101,7 +101,7 @@ class User_objetive(User,Web_driver):
                     enlace_shared = element_a.get_attribute('href')
 
                     container_description_enlace = item.find_element_by_css_selector('div.b3i9ofy5.s1tcr66n.l9j0dhe7.p8dawk7l')
-                    descripcion_post_shared = item.find_element_by_css_selector('div.qzhwtbm6.knvmm38d').text
+                    descripcion_post_shared = container_description_enlace.find_element_by_css_selector('div.qzhwtbm6.knvmm38d').text
                 except:
                     enlace_shared = 'NOT ASSIGNED'
                     descripcion_post_shared = 'NOT ASSIGNED'
@@ -152,14 +152,30 @@ class User_objetive(User,Web_driver):
                     FLAG_shared = False
                 
                 if autor_post != self.name:
-                    FLAG_etiquetado = True
+                    if self.url in url_autor:
+                        FLAG_tagged_someone = True
+                        FLAG_someone_tagged_me = False
+                    else:
+                        FLAG_tagged_someone = False
+                        FLAG_someone_tagged_me = True
                 else:
-                    FLAG_etiquetado = False
+                    FLAG_tagged_someone = False
+                    FLAG_someone_tagged_me = False
                 
                 if enlace_shared != 'NOT ASSIGNED':
                     FLAG_enlace = True
                 else:
                     FLAG_enlace = False
+                
+                if url_video != 'NOT ASSIGNED':
+                    FLAG_video = True
+                else:
+                    FLAG_video = False
+                
+                if len(url_images) == 0:
+                    FLAG_image = False
+                else:
+                    FLAG_image = True
 
                 row_post = {
                     'autor_post': autor_post,
@@ -176,9 +192,13 @@ class User_objetive(User,Web_driver):
                     'cant_reacciones': cant_reacciones,
                     'cant_shared': cant_shared,
                     'cant_comments': cant_comments,
-                    'etiquetado': FLAG_etiquetado,
+                    'tagged_someone': FLAG_tagged_someone,
+                    'someone_tagged_me':FLAG_someone_tagged_me,
                     'shared': FLAG_shared,
-                    'enlace': FLAG_enlace,
+                    'has_enlace': FLAG_enlace,
+                    'has_image': FLAG_image,
+                    'has_video': FLAG_video,
+
                 }
                 print(row_post)
                 data_post.append(row_post)
