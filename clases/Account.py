@@ -65,7 +65,7 @@ class Account(Web_driver):
             self.user_obetive = None
         else:
             #friend = self.list_frends[random.randint(0, size-1)]
-            friend = self.list_frends[6]
+            friend = self.list_frends[7]
             self.user_obetive = User_objetive(friend['url'] , friend['name'], self.driver)
     
     def get_friend_random(self):

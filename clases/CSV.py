@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 
 class CSV:
-    headers = ['Url_user', 'autor', 'autor_shared', 'description','description_shared', 'url_media', 'date_post', 'date_post_shared']
+    headers = ['autor', 'autor_shared','url_autor', 'url_autor_shared', 'description','description_shared', 'url_images', 'url_video', 'date_post', 'date_post_shared']
 
     def __init__(self, rows = []):
         self.rows = rows
