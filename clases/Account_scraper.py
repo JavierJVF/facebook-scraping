@@ -5,8 +5,12 @@ from datetime import datetime
 from clases.User_objetive import User_objetive
 import random
 
+#########################################
+# Clase para abstraer metodos sobre la Cuenta que se usa
+# para ingresar a facebook, navegar y ubicar la seccion que nos interesa
+#############################3##########
 
-class Account(Web_driver):
+class Account_scraper(Web_driver):
     def __init__(self, mail_or_phone_number, password, user_obetive = None):
         self.mail_or_phone_number = mail_or_phone_number
         self.password = password
@@ -15,6 +19,7 @@ class Account(Web_driver):
 
         super().__init__()
     
+    #metodo para iniciar session en facebook mediante unas credenciales ya ingresadas
     def login(self):
         print('logueando')
         self.driver.get('https://www.facebook.com/')
@@ -28,29 +33,37 @@ class Account(Web_driver):
 
         print('logueado')
 
+    #metodo para realizar el proceso de rellenar el formulario de iniciar sesion
     def set_credentials(self):
         self.fill_mail_or_phone_number()
         self.fill_password()
         self.click_login()
     
+    #Metodo para rellenar el input de mail_or_number
     def fill_mail_or_phone_number(self):
         input_mail_or_phone_number = self.driver.find_element_by_id('email')
         input_mail_or_phone_number.send_keys(self.mail_or_phone_number, Keys.ARROW_DOWN)
     
+    #Metodo para rellenar el input de password
     def fill_password(self):
         input_pass = self.driver.find_element_by_id('pass')
         input_pass.send_keys(self.password, Keys.ARROW_DOWN)
 
+    #Metodo para hacer click al boton de entrar para enviar los datos ingresados
     def click_login(self):
         button_send_content = self.driver.find_elements_by_css_selector('div._6ltg')[0]
         button_send = button_send_content.find_element_by_css_selector('button')
         self.driver.execute_script("arguments[0].click();", button_send)
     
+    #Metodo que ubica las url y nombres de los primeros usuarios de la lista de amigos
     def find_friends(self):
         self.driver.get('https://www.facebook.com/friends/list')
+        #este sleep es para que cargue la pagina
         time.sleep(25)
-        name_png = 'friends_'+self.str_datetime()+'.csv'
-        self.driver.save_screenshot('screenshot/'+ name_png + '.png')
+
+        #opcionalmente podemmos scar una captura de pantalla
+        '''name_png = 'friends_'+self.str_datetime()+'.csv'
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
 
         my_list_frends = self.driver.find_elements_by_css_selector('div.sxpk6l6v a')
         print(len(my_list_frends))
@@ -59,6 +72,7 @@ class Account(Web_driver):
             name = friend.find_element_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.jq4qci2q.a3bd9o3v')
             self.list_frends.append({'url': url, 'name': name.text})
     
+    # Selecciona de forma aleatoria a uno de los usuarios de la lista de amigos ubicada
     def select_user_objetive(self):
         size = len(self.list_frends)
         if size ==0:
@@ -68,9 +82,11 @@ class Account(Web_driver):
             #friend = self.list_frends[7]
             self.user_obetive = User_objetive(friend['url'] , friend['name'], self.driver)
     
+    # Otro metodo para obtener un usuario de forma aleatoria de la lista de amigos ya ubicada
     def get_friend_random(self):
         return self.list_frends[random.randint(0, len(self.list_frends)-1)]
         
+    # metodo usado para pruebas y agilizar el proceso danto una lista sin buscarla con el webdriver
     def set_list(self):
         self.list_frends = [
             {'url': 'https://www.facebook.com/darvinson.santoyo', 'name': 'Darvinson Jose'}, 
@@ -92,9 +108,8 @@ class Account(Web_driver):
             {'url': 'https://www.facebook.com/Solangelcamila89', 'name': 'Maurera Sol'}, 
             {'url': 'https://www.facebook.com/eliezer.26', 'name': 'Eliezer Romero'}, 
             {'url': 'https://www.facebook.com/yarii.zuniga', 'name': 'Yáríí Zúñígá'}]
-    
-    def metodo_fill_posts():
-        pass
-        
+
+    # metodo para establecer la fecha y hora como un string 
+    # y usarlo como nombres de las capturas de pantalla    
     def str_datetime(self):
         return str(datetime.now()).replace(':','_').replace(' ','_')
