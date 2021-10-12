@@ -4,7 +4,7 @@ from clases.Account_scraper import Account_scraper
 #se debe ingresar las credenciales para iniciar session en facebook
 #parametro 1: email o numero de telefono
 #parametro 2: passwword
-account = Account_scraper('javier._v@hotmail.com', 'jav14ier') ########## MODIFICAR
+account = Account_scraper('', '') ########## MODIFICAR
 
 
 try:
@@ -16,21 +16,20 @@ try:
 
     #Ubicamos la lista de amigos y obtenemos sus enlaces
     #account.find_friends()
-    account.set_list()
+    account.search_set('francia campeon')
 
-    #seleccionammos de forma aleatoria uno de las cuentas listadas
-    account.select_user_objetive()
+    account.search.buscar_terminos()
 
     #buscamos la informacion de sus posts
-    account.user_obetive.find_posts()
+    account.search.find_posts()
 
     #Inicializamos el objeto quue gestiona el csv a crear
-    csv = CSV(account.user_obetive.data_posts, account.user_obetive.name)
+    csv = CSV(account.search.data_posts, 'franciacampeon')
     #Creamos el csv con toda la informacion de los posts
     csv.register()
 
     #vemos de quien es la cuenta obetivo por consola
-    print(account.user_obetive)
+    #print(account.user_obetive)
 
 except Exception as e:
     print(e)

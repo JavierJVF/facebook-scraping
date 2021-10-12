@@ -4,33 +4,48 @@ from clases.User import User
 from clases.Post import Post 
 from clases.Web_driver import Web_driver
 from datetime import datetime,date,timedelta
+from selenium.webdriver.common.keys import Keys
 
 # Clase que indentifica al usuario objetivo de sacar la informacion
 # y ademas se enncarga de buscar cada uno de los posts para ser procesados
-class User_objetive(User,Web_driver):
+class Search(Web_driver):
     
     #atributo que marca el limmite de post que procesaremos en la clase
-    limit_post = 30
-    def __init__(self, url, name = None, driver = None):
-        User.__init__(self,name)
+    limit_post = 5
+    def __init__(self, text_find = None, driver = None):
         Web_driver.__init__(self,driver)
         self.data_posts = []
-        self.url = url
+        self.text_find = text_find
     
-    def __str__(self) -> str:
-        return User.__str__(self) + '\nURL: ' + self.url
     def str_datetime(self):
         return str(datetime.now()).replace(':','_').replace(' ','_')
+
+    def buscar_terminos(self):
+        #input.oajrlxb2.rq0escxv
+        input_search = self.driver.find_element_by_css_selector('input.oajrlxb2.rq0escxv')
+        self.driver.execute_script("arguments[0].click();", input_search)
+        time.sleep(1)
+        input_search = self.driver.find_element_by_css_selector('input.oajrlxb2.rq0escxv')
+        input_search.send_keys(self.text_find, Keys.ARROW_DOWN)
+        time.sleep(10)
+        #ul#jsc_c_2y a
+
+        ul = self.driver.find_element_by_css_selector('ul.buofh1pr.cbu4d94t.j83agx80')
+        a_list = ul.find_elements_by_css_selector('a')
+        pos_fin = len(a_list) - 1
+        a = a_list[pos_fin]
+        self.driver.execute_script("arguments[0].click();", a)
+        
 
     # Metodo que se encarga de buscar los 10 posts del usuario objetivo para
     # sacar la informacion que requerimos
     def find_posts(self):
-        self.driver.get(self.url)
+        #self.driver.get(self.url)
         time.sleep(30)
 
         #opcionalmmente podemos sacar uuna captura del muro de publicaciones
-        '''name_png = 'login_'+self.str_datetime()
-        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
+        name_png = 'login_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')
 
         #se uubican los posts
         self.view_post()
@@ -46,10 +61,10 @@ class User_objetive(User,Web_driver):
                 post.find_cant_comments_and_shared()
                 post.find_link_shared()
                 post.find_autores_and_description_info()
-                post.valitade_flags(self.url, self.name)
+                post.valitade_flags_search()
 
-                row_post = post.to_row()
-                #print(row_post)
+                row_post = post.to_row_search()
+                print(row_post)
                 self.data_posts.append(row_post)
 
                 cont = cont + 1
@@ -78,24 +93,40 @@ class User_objetive(User,Web_driver):
         list_posts_acum = []
 
         #all_section = self.driver.find_element_by_css_selector('div.tr9rh885.k4urcfbm')
-        all_section = self.driver.find_element_by_css_selector('div.gile2uim')
-        posts_items = all_section.find_elements_by_xpath('div[3]/div')
+        #all_section = self.driver.find_element_by_css_selector('div.gile2uim')
+        all_section = self.driver.find_element_by_css_selector('div.d2edcug0.o7dlgrpb')
+        #d2edcug0 o7dlgrpb
+        posts_items = all_section.find_elements_by_xpath('div/div')
 
         for post_activated in posts_items:
 
             if post_activated.text != '': #si es vacio significa que el post no cargo la informacion
                 
                 #aria-posinset.33
-                element_whit_id = post_activated.find_element_by_xpath('div/div/div/div/div')
-                posinset = element_whit_id.get_attribute('aria-labelledby')
-                print('posinset: '+ str(posinset))
-                if posinset in posinsetlist:
-                    pass
-                else:
-                    posinsetlist.append(posinset)
-                    list_posts_acum.append(post_activated)
-                    num_post = num_post + 1
-                    print('num_post: ' + str(num_post))
+                
+                try:
+                    print('####################')
+                    titulo = post_activated.find_element_by_css_selector('h3').text
+                    print('titulo: '+ titulo)
+                    print('####################')
+                    #element_whit_id = post_activated.find_element_by_xpath('div/div/div/div/div/div')
+                    element_whit_id = post_activated.find_element_by_css_selector('div.lzcic4wl')
+                    #lzcic4wl
+                    posinset = element_whit_id.get_attribute('aria-labelledby')
+                
+                except Exception as e:
+                    print(e)
+                    posinset = None
+                
+                if posinset!=None:
+                    print('posinset: '+ str(posinset))
+                    if posinset in posinsetlist:
+                        pass
+                    else:
+                        posinsetlist.append(posinset)
+                        list_posts_acum.append(post_activated)
+                        num_post = num_post + 1
+                        print('num_post: ' + str(num_post))
 
         if num_post < self.limit_post: # sino alcanza el limite de posts vuelve a llamar al mismo metodo hasta llegar
             self.extraer_datos_view(list_posts_acum)

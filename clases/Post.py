@@ -152,7 +152,9 @@ class Post:
     # ademas extrae la fecha de publicacion del post y si es compartido entonces extrae la del post compartido
     # por parametro se le pasa el elemento padre
     def get_data_text_of_post(self,segmentos_texto):
-        h2 =  segmentos_texto[0].find_elements_by_css_selector('h2')
+        h2 =  segmentos_texto[0].find_elements_by_css_selector('h3')
+        #h2 =  segmentos_texto[0].find_elements_by_css_selector('h2')
+        
         if(len(h2) == 1): # si es 1 significa que tiene un h2 y es el del autor de la publicacion
             self.a_element_in_titulo = h2[0].find_elements_by_css_selector('a')
             self.url_autor = self.a_element_in_titulo[0].get_attribute('href')
@@ -220,6 +222,12 @@ class Post:
         self.validate_flag_video()
         self.validate_flag_image()
     
+    def valitade_flags_search(self):
+        self.valiate_flag_shared()
+        self.validate_flag_link()
+        self.validate_flag_video()
+        self.validate_flag_image()
+    
     # obtiene todos los atributos del objeto y los coloca en un dict, es usado para cargar una lista
     def to_row(self):
         return {
@@ -239,6 +247,30 @@ class Post:
             'cant_comments': self.cant_comments,
             'tagged_someone': self.FLAG_tagged_someone,
             'someone_tagged_me': self.FLAG_someone_tagged_me,
+            'shared': self.FLAG_shared,
+            'has_enlace': self.FLAG_enlace,
+            'has_image': self.FLAG_image,
+            'has_video': self.FLAG_video,
+        }
+    
+    def to_row_search(self):
+        return {
+            'autor_post': self.autor_post,
+            'url_autor': self.url_autor,
+            'date_post': self.date_post,
+            'descripcion_post': self.descripcion_post,
+            'autor_post_shared': self.autor_post_shared,
+            'url_autor_shared': self.url_autor_shared,
+            'date_post_shared': self.date_post_shared,
+            'descripcion_post_shared': self.descripcion_post_shared,
+            'enlace_shared': self.enlace_shared,
+            'url_image': str(self.url_images),
+            'url_video': self.url_video,
+            'cant_reacciones': self.cant_reacciones,
+            'cant_shared': self.cant_shared,
+            'cant_comments': self.cant_comments,
+            'tagged_someone': 'NULL',
+            'someone_tagged_me': 'NULL',
             'shared': self.FLAG_shared,
             'has_enlace': self.FLAG_enlace,
             'has_image': self.FLAG_image,

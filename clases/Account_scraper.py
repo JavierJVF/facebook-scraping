@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 from datetime import datetime
 from clases.User_objetive import User_objetive
+from clases.Search import Search
 import random
 
 #########################################
@@ -11,11 +12,12 @@ import random
 #############################3##########
 
 class Account_scraper(Web_driver):
-    def __init__(self, mail_or_phone_number, password, user_obetive = None):
+    def __init__(self, mail_or_phone_number, password, user_obetive = None, search=None):
         self.mail_or_phone_number = mail_or_phone_number
         self.password = password
         self.list_frends = []
         self.user_obetive = user_obetive
+        self.search = search
 
         super().__init__()
     
@@ -28,8 +30,8 @@ class Account_scraper(Web_driver):
         self.set_credentials()
         time.sleep(25)
 
-        name_png = 'login_'+self.str_datetime()
-        self.driver.save_screenshot('screenshot/'+ name_png + '.png')
+        '''name_png = 'login_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
 
         print('logueado')
 
@@ -78,9 +80,12 @@ class Account_scraper(Web_driver):
         if size ==0:
             self.user_obetive = None
         else:
-            friend = self.list_frends[random.randint(0, size-1)]
-            #friend = self.list_frends[7]
+            #friend = self.list_frends[random.randint(0, size-1)]
+            friend = self.list_frends[7]
             self.user_obetive = User_objetive(friend['url'] , friend['name'], self.driver)
+    
+    def search_set(self, terminos):
+        self.search = Search(terminos, self.driver)
     
     # Otro metodo para obtener un usuario de forma aleatoria de la lista de amigos ya ubicada
     def get_friend_random(self):
