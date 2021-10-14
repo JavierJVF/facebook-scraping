@@ -1,10 +1,13 @@
 from clases.CSV import CSV
 from clases.Account_scraper import Account_scraper
+from getpass import getpass
 
-#se debe ingresar las credenciales para iniciar session en facebook
-#parametro 1: email o numero de telefono
-#parametro 2: passwword
-account = Account_scraper('', '') ########## MODIFICAR
+
+usr        = input("Twitter User:")
+pwd        = getpass()
+term       = input("Search Term:")
+#account = Account_scraper('', '') ########## MODIFICAR
+account = Account_scraper(usr, pwd) ########## MODIFICAR
 
 
 try:
@@ -14,9 +17,7 @@ try:
     #Nos logueamos en el sitio
     account.login()
 
-    #Ubicamos la lista de amigos y obtenemos sus enlaces
-    #account.find_friends()
-    account.search_set('francia campeon')
+    account.search_set(term)
 
     account.search.buscar_terminos()
 
@@ -24,12 +25,9 @@ try:
     account.search.find_posts()
 
     #Inicializamos el objeto quue gestiona el csv a crear
-    csv = CSV(account.search.data_posts, 'franciacampeon')
+    csv = CSV(account.search.data_posts, term)
     #Creamos el csv con toda la informacion de los posts
     csv.register()
-
-    #vemos de quien es la cuenta obetivo por consola
-    #print(account.user_obetive)
 
 except Exception as e:
     print(e)

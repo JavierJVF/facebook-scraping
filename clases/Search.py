@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 class Search(Web_driver):
     
     #atributo que marca el limmite de post que procesaremos en la clase
-    limit_post = 5
+    limit_post = 20
     def __init__(self, text_find = None, driver = None):
         Web_driver.__init__(self,driver)
         self.data_posts = []
@@ -44,8 +44,8 @@ class Search(Web_driver):
         time.sleep(30)
 
         #opcionalmmente podemos sacar uuna captura del muro de publicaciones
-        name_png = 'login_'+self.str_datetime()
-        self.driver.save_screenshot('screenshot/'+ name_png + '.png')
+        #name_png = 'login_'+self.str_datetime()
+        #self.driver.save_screenshot('screenshot/'+ name_png + '.png')
 
         #se uubican los posts
         self.view_post()
@@ -63,8 +63,8 @@ class Search(Web_driver):
                 post.find_autores_and_description_info()
                 post.valitade_flags_search()
 
-                row_post = post.to_row_search()
-                print(row_post)
+                row_post = post.to_row_search_row()
+                #print(row_post)
                 self.data_posts.append(row_post)
 
                 cont = cont + 1
@@ -77,17 +77,16 @@ class Search(Web_driver):
         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight);")
         #sleep para esperarr a que la informacion nueva que se muestra por el scroll cargue
         time.sleep(10)
-    
-
 
 
     # Metodo para hacer scroll hacia abajo en la pagina y
     # hacer que se muestren mas posts de forma dinamica
     # hasta llegar al numero de posts que necesitamos
-    def view_post(self, num_post = 0,posinsetlist=[]):
+    def view_post(self, num_post = 0,posinsetlist=[],last_element = None):
         try:
             self.make_scroll()
         except:
+            print('---------------------')
             return False #en caso de que no se pueda hacer mas scroll retornamos false para indicar que es el tope
 
         list_posts_acum = []
@@ -97,6 +96,14 @@ class Search(Web_driver):
         all_section = self.driver.find_element_by_css_selector('div.d2edcug0.o7dlgrpb')
         #d2edcug0 o7dlgrpb
         posts_items = all_section.find_elements_by_xpath('div/div')
+
+        try:
+            if last_element == posts_items[len(posts_items)-1]:
+                return False
+            else :
+                last_element = posts_items[len(posts_items)-1]
+        except:
+            return False
 
         for post_activated in posts_items:
 
@@ -115,11 +122,11 @@ class Search(Web_driver):
                     posinset = element_whit_id.get_attribute('aria-labelledby')
                 
                 except Exception as e:
-                    print(e)
+                    #print(e)
                     posinset = None
                 
                 if posinset!=None:
-                    print('posinset: '+ str(posinset))
+                    print('id post: '+ str(posinset))
                     if posinset in posinsetlist:
                         pass
                     else:
@@ -130,7 +137,7 @@ class Search(Web_driver):
 
         if num_post < self.limit_post: # sino alcanza el limite de posts vuelve a llamar al mismo metodo hasta llegar
             self.extraer_datos_view(list_posts_acum)
-            estatus_post_view = self.view_post(num_post,posinsetlist)
+            estatus_post_view = self.view_post(num_post,posinsetlist, last_element)
 
 
             if estatus_post_view == False: # si es false quiere decir quue ya no hay mas posts y toma el de la iteacion anterior
@@ -138,6 +145,6 @@ class Search(Web_driver):
 
         else:
             self.extraer_datos_view(list_posts_acum)
-            return True
+            return False
 
         return True

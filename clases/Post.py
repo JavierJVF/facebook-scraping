@@ -277,6 +277,29 @@ class Post:
             'has_video': self.FLAG_video,
         }
     
+    def to_row_search_row(self):
+        return[
+            self.autor_post,
+            self.url_autor,
+            self.date_post,
+            self.descripcion_post,
+            self.autor_post_shared,
+            self.url_autor_shared,
+            self.date_post_shared,
+            self.descripcion_post_shared,
+            self.enlace_shared,
+            str(self.url_images),
+            self.url_video,
+            self.cant_reacciones,
+            self.cant_shared,
+            self.cant_comments,
+            'NULL',
+            'NULL',
+            self.FLAG_shared,
+            self.FLAG_enlace,
+            self.FLAG_image,
+            self.FLAG_video,
+        ]
     # metodo que extrae la informacion de la fecha del post que viene encriptada o enmascarada
     def get_date(self, element):
         spam_date = element.find_element_by_css_selector('span.j1lvzwm4.stjgntxs.ni8dbmo4.q9uorilb.gpro0wi8')
