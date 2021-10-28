@@ -4,7 +4,7 @@ from clases.Account_scraper import Account_scraper
 #se debe ingresar las credenciales para iniciar session en facebook
 #parametro 1: email o numero de telefono
 #parametro 2: passwword
-account = Account_scraper('javier._v@hotmail.com', 'jav14ier') ########## MODIFICAR
+account = Account_scraper('', '') ########## MODIFICAR
 
 
 try:
