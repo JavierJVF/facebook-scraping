@@ -64,7 +64,10 @@ class Search(Web_driver):
         
         post = Post(None)
         post.set_driver_global(self.driver)
+        post.click_todos_comentarios()
+        #time.sleep(5)
         post.show_all_answer()
+        post.ver_mas_texto()
         element = self.driver.find_element_by_css_selector('div.j83agx80.l9j0dhe7.k4urcfbm')
         post.driver_post = element
 

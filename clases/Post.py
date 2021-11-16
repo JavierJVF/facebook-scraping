@@ -77,46 +77,97 @@ class Post:
             have_answer =False
         return have_answer
 
+    def ver_mas_texto(self):
+        #oajrlxb2 g5ia77u1 qu0x051f esr5mh6w e9989ue4 r7d6kgcz rq0escxv nhd2j8a9 nc684nl6 p7hjln8o kvgmc6g5 cxmmr5t8 oygrvhab hcukyx3x jb3vyjys rz4wbd8a qt6c0cv9 a8nywdso i1ao9s8h esuyzwwr f1sip0of lzcic4wl oo9gr5id gpro0wi8 lrazzd5p
+        ver_mas_link = self.driver_global.find_elements_by_css_selector('div.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.oo9gr5id.gpro0wi8.lrazzd5p')
+        for item in ver_mas_link:
+            if 'Ver más'.upper() in item.text.upper():
+                self.driver_global.execute_script("arguments[0].click();", item)
 
-    def show_all_answer(self):
-        button_answers = self.driver_global.find_elements_by_css_selector('div.rq0escxv.l9j0dhe7.du4w35lb.q9uorilb.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.n8tt0mok.hyh9befq.r8blr3vg.jwdofwj8.g0qnabr5.ni8dbmo4.stjgntxs.ltmttdrg')
+    def show_all_answer(self, ignorar_num = 0):
+        print('ignorar: '+str(ignorar_num))
+
+        try:
+            pos_secction_down = self.driver_global.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p')
+            pos_secction_down = pos_secction_down.find_element_by_xpath('ul')
+            
+        except:
+            pos_secction_down = self.driver_global
+        button_answers = pos_secction_down.find_elements_by_css_selector('div.rq0escxv.l9j0dhe7.du4w35lb.q9uorilb.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.n8tt0mok.hyh9befq.r8blr3vg.jwdofwj8.g0qnabr5.ni8dbmo4.stjgntxs.ltmttdrg')
         print(len(button_answers))
         if len(button_answers) == 0:
-            return False
+            button_answers = pos_secction_down.find_elements_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.lrazzd5p.m9osqain')
+            print(len(button_answers))
+            if len(button_answers) == ignorar_num:
+                return False
 
+        count = 0
         for button in button_answers:
             print(button.text)
-            self.driver_global.execute_script("arguments[0].click();", button)
+            if ('Ocultar'.upper() in button.text.upper()) or ('Escribe'.upper() in button.text.upper()):
+                count = count + 1
+            else:
+                self.driver_global.execute_script("arguments[0].click();", button)
 
         time.sleep(5)
-        self.show_all_answer()
+        self.show_all_answer(count)
+    
+    def click_todos_comentarios(self):
+        try:
+            pos_secction_down = self.driver_global.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p')
+            #d2edcug0 hpfvmrgz qv66sw1b c1et5uql lr9zc1uh a8c37x1j keod5gw0 nxhoafnm aigsh9s9 d3f4x2em fe6kdd0r mau55g9w c8b282yb iv3no6db jq4qci2q a3bd9o3v lrazzd5p m9osqain
+            element_menu_selection = pos_secction_down.find_element_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.lrazzd5p.m9osqain')
+            self.driver_global.execute_script("arguments[0].click();", element_menu_selection)
+            time.sleep(10)
+
+            #j83agx80 cbu4d94t ew0dbk1b irj2b8pg
+            button = self.driver_global.find_elements_by_css_selector('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg')
+            print(len(button))
+            self.driver_global.execute_script("arguments[0].click();", button[2])
+            time.sleep(15)
+
+            elements_down = self.driver_global.find_elements_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.lrazzd5p.m9osqain')
+            
+            self.driver_global.execute_script("arguments[0].click();", elements_down[len(elements_down)-2])
+
+        except Exception as e:
+            print(e)
+            print('no tiene mas destacados')
 
     def get_comments(self):
         #div.cwj9ozl2.tvmbv18p ul
-        ul = self.driver_post.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p ul')
+        pos_secction_down = self.driver_post.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p')
+        ul = pos_secction_down.find_element_by_xpath('ul')
         coment_elements = ul.find_elements_by_xpath('li')
 
         list_answer_pos = list()
 
         count = 1
         for comment_element in coment_elements:
-            coment_segments = comment_element.find_elements_by_xpath('div')
-            comment_sup = coment_segments[0]
-            element_dict = self.get_info(comment_sup, count, True)
+            try:
+                coment_segments = comment_element.find_elements_by_xpath('div')
+                comment_sup = coment_segments[0]
+                element_dict = self.get_info(comment_sup, count, True)
 
-            list_element_dict = []
+                list_element_dict = []
+                #print(element_dict)
 
-            if len(coment_segments) == 2:
-                comment_inf = coment_segments[1]
-                list_element_dict = self.get_answer_of_comment(comment_inf, count)
-            
-            list_element_dict.insert(0,element_dict)
-            '''element_dict = self.get_info(comment_element, count)'''
-            '''have_answer = self.click_more_answers(comment_element)
+                if len(coment_segments) == 2:
+                    comment_inf = coment_segments[1]
+                    list_element_dict = self.get_answer_of_comment(comment_inf, count)
+                    #print(list_element_dict)
 
-            if have_answer:
-                list_answer_pos.append(count)
+                #print('////////////')
+                
+                list_element_dict.insert(0,element_dict)
+                '''element_dict = self.get_info(comment_element, count)'''
+                '''have_answer = self.click_more_answers(comment_element)
+
+                if have_answer:
+                    list_answer_pos.append(count)
             '''
+            except:
+                print('error de comentario')
             count = count + 1
             self.comment_list.extend(list_element_dict)
         
@@ -174,11 +225,15 @@ class Post:
             }'''
     
     def get_answer_of_comment(self, segment_comment, pos):
+        #div.ni8dbmo4.stjgntxs.l9j0dhe7.dox67ykf
         elements = segment_comment.find_elements_by_xpath('div/ul/li')
+        elements2 = segment_comment.find_elements_by_css_selector('div.ni8dbmo4.stjgntxs.l9j0dhe7.dox67ykf')
         list_elements = list()
+        elements.extend(elements2)
         for element in elements:
-            element_dict = self.get_info(element, pos, False)
-            list_elements.append(element_dict)
+            if element.text != '':
+                element_dict = self.get_info(element, pos, False)
+                list_elements.append(element_dict)
         return list_elements
     # Metodo que busca un video en el post
     # si lo tiene entoces extrae el src
