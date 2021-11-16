@@ -1,4 +1,6 @@
 from clases.Fecha import Fecha 
+import time
+
 
 #CLASE para Extraer y gestionar los datos de los posts de los usuarios objetivos
 class Post:
@@ -22,6 +24,9 @@ class Post:
         self.cant_comments = 0
         self.enlace_shared = 'NOT ASSIGNED'
         self.a_element_in_titulo = []
+
+        self.comment_list = []
+        self.driver_global = None
 
         # descripcion de los atributos
         '''
@@ -50,6 +55,9 @@ class Post:
 
     # Metodo que busca imagenes en el post
     # si la tiene entonces extrae el/los src
+    def set_driver_global(self, driver):
+        self.driver_global = driver
+
     def find_images(self):
         
         try:
@@ -59,6 +67,120 @@ class Post:
         except:
             self.url_images = []
 
+    def click_more_answers(self, comment_element):
+        have_answer = False
+        try:
+            element_show_answers = comment_element.find_element_by_css_selector('div.rq0escxv.l9j0dhe7.du4w35lb.q9uorilb.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.n8tt0mok.hyh9befq.r8blr3vg.jwdofwj8.g0qnabr5.ni8dbmo4.stjgntxs.ltmttdrg')
+            self.driver_global.execute_script("arguments[0].click();", element_show_answers)
+            have_answer = True
+        except:
+            have_answer =False
+        return have_answer
+
+
+    def show_all_answer(self):
+        button_answers = self.driver_global.find_elements_by_css_selector('div.rq0escxv.l9j0dhe7.du4w35lb.q9uorilb.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.rj1gh0hx.buofh1pr.n8tt0mok.hyh9befq.r8blr3vg.jwdofwj8.g0qnabr5.ni8dbmo4.stjgntxs.ltmttdrg')
+        print(len(button_answers))
+        if len(button_answers) == 0:
+            return False
+
+        for button in button_answers:
+            print(button.text)
+            self.driver_global.execute_script("arguments[0].click();", button)
+
+        time.sleep(5)
+        self.show_all_answer()
+
+    def get_comments(self):
+        #div.cwj9ozl2.tvmbv18p ul
+        ul = self.driver_post.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p ul')
+        coment_elements = ul.find_elements_by_xpath('li')
+
+        list_answer_pos = list()
+
+        count = 1
+        for comment_element in coment_elements:
+            coment_segments = comment_element.find_elements_by_xpath('div')
+            comment_sup = coment_segments[0]
+            element_dict = self.get_info(comment_sup, count, True)
+
+            list_element_dict = []
+
+            if len(coment_segments) == 2:
+                comment_inf = coment_segments[1]
+                list_element_dict = self.get_answer_of_comment(comment_inf, count)
+            
+            list_element_dict.insert(0,element_dict)
+            '''element_dict = self.get_info(comment_element, count)'''
+            '''have_answer = self.click_more_answers(comment_element)
+
+            if have_answer:
+                list_answer_pos.append(count)
+            '''
+            count = count + 1
+            self.comment_list.extend(list_element_dict)
+        
+        print(self.comment_list)
+        '''print(list_answer_pos)
+
+        self.find_anwers_by_pos(list_answer_pos)'''
+        #kvgmc6g5 jb3vyjys rz4wbd8a qt6c0cv9 d0szoon8
+        #ul li
+        #a user name and href
+        #a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8
+
+        #div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql
+    
+    
+    def find_anwers_by_pos(self, list_answer_pos):
+
+        element = self.driver_global.find_element_by_css_selector('div.j83agx80.l9j0dhe7.k4urcfbm')
+        ul = element.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p ul')
+        coment_elements = ul.find_elements_by_xpath('li')
+
+        list_element_dict = list()
+
+        for pos in list_answer_pos:
+            coment_segments = coment_elements[pos].find_elements_by_xpath('div')
+            comment_sup = coment_segments[0]
+            element_dict = self.get_info(comment_sup, pos, True)
+
+            if len(coment_segments) == 2:
+                comment_inf = coment_segments[1]
+                list_element_dict = self.get_answer_of_comment(comment_inf, pos)
+            
+        list_element_dict.insert(0, element_dict)
+        return list_element_dict
+
+    def get_info(self, comment_element, id, principal):
+        element_a = comment_element.find_element_by_css_selector('a.oajrlxb2.g5ia77u1.qu0x051f.esr5mh6w.e9989ue4.r7d6kgcz.rq0escxv.nhd2j8a9.nc684nl6.p7hjln8o.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.jb3vyjys.rz4wbd8a.qt6c0cv9.a8nywdso.i1ao9s8h.esuyzwwr.f1sip0of.lzcic4wl.gmql0nx0.gpro0wi8')
+        name_user = element_a.text
+        url_user = element_a.get_attribute('href')
+        comment_text = comment_element.find_element_by_css_selector('div.kvgmc6g5.cxmmr5t8.oygrvhab.hcukyx3x.c1et5uql').text
+
+        return [
+            id,
+            name_user,
+            url_user,
+            comment_text,
+            principal
+            ]
+        
+        '''return {
+                'name_user': name_user,
+                'url_user': url_user,
+                'comment_text': comment_text,
+                'comment_main': principal,
+                'id': id
+            }'''
+    
+    def get_answer_of_comment(self, segment_comment, pos):
+        elements = segment_comment.find_elements_by_xpath('div/ul/li')
+        list_elements = list()
+        for element in elements:
+            element_dict = self.get_info(element, pos, False)
+            list_elements.append(element_dict)
+        return list_elements
     # Metodo que busca un video en el post
     # si lo tiene entoces extrae el src
     def find_video(self):
@@ -152,8 +274,8 @@ class Post:
     # ademas extrae la fecha de publicacion del post y si es compartido entonces extrae la del post compartido
     # por parametro se le pasa el elemento padre
     def get_data_text_of_post(self,segmentos_texto):
-        h2 =  segmentos_texto[0].find_elements_by_css_selector('h3')
-        #h2 =  segmentos_texto[0].find_elements_by_css_selector('h2')
+        #h2 =  segmentos_texto[0].find_elements_by_css_selector('h3')
+        h2 =  segmentos_texto[0].find_elements_by_css_selector('h2')
         
         if(len(h2) == 1): # si es 1 significa que tiene un h2 y es el del autor de la publicacion
             self.a_element_in_titulo = h2[0].find_elements_by_css_selector('a')

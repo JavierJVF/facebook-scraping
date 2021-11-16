@@ -7,7 +7,7 @@ from clases_instagram.Account_scraper import Account_scraper
 #parametro 2: passwword
 account = Account_scraper('', '') ########## MODIFICAR
 
-term = '#casico'
+term = '#realmadrid'
 if True:
     #se inicializa el Webdriver, en este caso mediante chromedriver
     account.init_webdriver()

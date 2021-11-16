@@ -12,10 +12,11 @@ class Search(Web_driver):
     
     #atributo que marca el limmite de post que procesaremos en la clase
     limit_post = 20
-    def __init__(self, text_find = None, driver = None):
+    def __init__(self, text_find = None, driver = None, link = None):
         Web_driver.__init__(self,driver)
         self.data_posts = []
         self.text_find = text_find
+        self.link = link
     
     def str_datetime(self):
         return str(datetime.now()).replace(':','_').replace(' ','_')
@@ -49,6 +50,41 @@ class Search(Web_driver):
 
         #se uubican los posts
         self.view_post()
+    
+    def find_post_by_link(self):
+        self.driver.get(self.link)
+        time.sleep(15)
+
+        self.select_post_element()
+
+        '''name_png = 'post_link_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
+    
+    def select_post_element(self):
+        
+        post = Post(None)
+        post.set_driver_global(self.driver)
+        post.show_all_answer()
+        element = self.driver.find_element_by_css_selector('div.j83agx80.l9j0dhe7.k4urcfbm')
+        post.driver_post = element
+
+        '''name_png = 'view_answers_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
+
+        post.get_comments()
+        self.data_posts = post.comment_list
+
+        '''post.find_images()
+        post.find_video()
+        post.find_cant_reacciones()
+        post.find_cant_comments_and_shared()
+        post.find_link_shared()
+        post.find_autores_and_description_info()
+        post.valitade_flags_search()
+
+        row_post = post.to_row_search_row()
+        print(row_post)'''
+
 
     def extraer_datos_view(self,posts_items):
         cont = 0

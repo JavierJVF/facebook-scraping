@@ -87,6 +87,9 @@ class Account_scraper(Web_driver):
     def search_set(self, terminos):
         self.search = Search(terminos, self.driver)
     
+    def link_set(self, link):
+        self.search = Search(None, self.driver, link)
+    
     # Otro metodo para obtener un usuario de forma aleatoria de la lista de amigos ya ubicada
     def get_friend_random(self):
         return self.list_frends[random.randint(0, len(self.list_frends)-1)]
