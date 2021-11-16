@@ -120,7 +120,6 @@ class Post:
             count = count + 1
             self.comment_list.extend(list_element_dict)
         
-        print(self.comment_list)
         '''print(list_answer_pos)
 
         self.find_anwers_by_pos(list_answer_pos)'''

@@ -25,10 +25,10 @@ class Account_scraper(Web_driver):
     def login(self):
         print('logueando')
         self.driver.get('https://www.facebook.com/')
-        time.sleep(25)
+        time.sleep(20)
 
         self.set_credentials()
-        time.sleep(25)
+        time.sleep(20)
 
         '''name_png = 'login_'+self.str_datetime()
         self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''

@@ -23,9 +23,6 @@ try:
 
     #Inicializamos el objeto quue gestiona el csv a crear
     name_csv = link.split('/')[3]
-    print(name_csv)
-    print('////////////////////////////////////////////////////////')
-    print(account.search.data_posts)
     csv = CSV(account.search.data_posts, name_csv)
     #Creamos el csv con toda la informacion de los posts
     csv.register_comments()
