@@ -52,6 +52,7 @@ class Search(Web_driver):
         self.view_post()
     
     def find_post_by_link(self):
+        
         self.driver.get(self.link)
         time.sleep(15)
 
@@ -73,7 +74,6 @@ class Search(Web_driver):
 
         '''name_png = 'view_answers_'+self.str_datetime()
         self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
-
         post.get_comments()
         self.data_posts = post.comment_list
 

@@ -123,16 +123,28 @@ class Post:
             #j83agx80 cbu4d94t ew0dbk1b irj2b8pg
             button = self.driver_global.find_elements_by_css_selector('div.j83agx80.cbu4d94t.ew0dbk1b.irj2b8pg')
             print(len(button))
-            self.driver_global.execute_script("arguments[0].click();", button[2])
+            self.driver_global.execute_script("arguments[0].click();", button[len(button)-2])
             time.sleep(15)
 
-            elements_down = self.driver_global.find_elements_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.lrazzd5p.m9osqain')
-            
-            self.driver_global.execute_script("arguments[0].click();", elements_down[len(elements_down)-2])
+            self.get_bajar_comentarios()            
 
         except Exception as e:
             print(e)
             print('no tiene mas destacados')
+            print('//////////////////////////////////////////////////////////////')
+
+    def get_bajar_comentarios(self):
+        pos_secction_down = self.driver_global.find_element_by_css_selector('div.cwj9ozl2.tvmbv18p')
+        elements_down = pos_secction_down.find_elements_by_css_selector('span.d2edcug0.hpfvmrgz.qv66sw1b.c1et5uql.lr9zc1uh.a8c37x1j.keod5gw0.nxhoafnm.aigsh9s9.d3f4x2em.fe6kdd0r.mau55g9w.c8b282yb.iv3no6db.jq4qci2q.a3bd9o3v.lrazzd5p.m9osqain')
+        try:
+            mas_comentarios = elements_down[len(elements_down)-2]
+            #print(mas_comentarios.text.upper())
+            if 'comentarios'.upper() in mas_comentarios.text.upper():
+                self.driver_global.execute_script("arguments[0].click();", mas_comentarios)
+                time.sleep(15)
+                self.get_bajar_comentarios()
+        except:
+            print('no tiene mas comentarios')
 
     def get_comments(self):
         #div.cwj9ozl2.tvmbv18p ul
