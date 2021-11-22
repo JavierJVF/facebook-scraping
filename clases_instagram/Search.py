@@ -13,11 +13,33 @@ class Search(Web_driver):
     
     #atributo que marca el limmite de post que procesaremos en la clase
     limit_post = 20
-    def __init__(self, text_find = None, driver = None):
+    def __init__(self, text_find = None, driver = None, link = None):
         Web_driver.__init__(self,driver)
         self.data_posts = []
         self.text_find = text_find
+        self.link = link
     
+    def find_post_by_link(self):
+        
+        self.driver.get(self.link)
+        time.sleep(15)
+        '''name_png = 'view_instagram_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
+
+        self.select_post_element()
+
+    def select_post_element(self):
+        
+        post = Post(None)
+        post.set_driver_global(self.driver)
+        post.click_plus()
+        post.click_ver_respuestas()
+        self.data_posts =  post.find_comments()
+        #print(self.data_posts)
+
+        '''name_png = 'view_answers_'+self.str_datetime()
+        self.driver.save_screenshot('screenshot/'+ name_png + '.png')'''
+
     def str_datetime(self):
         return str(datetime.now()).replace(':','_').replace(' ','_')
 

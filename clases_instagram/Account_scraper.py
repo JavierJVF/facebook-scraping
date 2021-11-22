@@ -57,6 +57,9 @@ class Account_scraper(Web_driver):
     
     def search_set(self, terminos):
         self.search = Search(terminos, self.driver)
+    
+    def link_set(self, link):
+        self.search = Search(None, self.driver, link)
 
     # metodo para establecer la fecha y hora como un string 
     # y usarlo como nombres de las capturas de pantalla    

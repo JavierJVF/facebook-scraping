@@ -24,6 +24,29 @@ class CSV:
         name_csv = 'files/' + self.name_user_file +'_'+self.str_datetime()+'.csv'
         dataframe_posts.to_csv('files/'+name_csv, index = False, header=True, encoding='utf-8')'''
     
+    def register_comments(self):
+        name_csv = 'files/' + self.name_user_file +'_'+self.str_datetime()+'.csv'
+        self.create_csv_only_for_comments(name_csv)
+        for x in self.list_dict:
+            self.save_instagram_comment_to_csv(x,name_csv)
+    
+    def save_instagram_comment_to_csv(self,records, filepath, mode='a+'):
+        header = ['user', 'user_url', 'text']
+
+        with open(filepath, mode=mode, newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            if mode == 'w':
+                writer.writerow(header)
+            if records:
+                writer.writerow(records)
+
+    def create_csv_only_for_comments(self, filepath, mode='w'):
+        header = ['user', 'user_url', 'text']
+
+        with open(filepath, mode=mode, newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+
     def save_instagram_data_to_csv(self,records, filepath, mode='a+'):
         header = [
             'img_src',
